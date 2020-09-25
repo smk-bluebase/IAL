@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+
+
+    <!-- Thumbnail Image -->
+    <ImageView
+        android:id="@+id/thumbinal"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/thumimage"
+        android:layout_below="@+id/menu_title"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <!-- Menu Title -->
+    <TextView
+        android:id="@+id/menu_title"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:focusable="false"/>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:singleLine="true"
+        android:text="Quantity"
+
+        android:textColorHint="@color/input_login_hint"
+        android:textColor="@color/whole_background"
+        android:layout_toRightOf="@+id/thumbinal"
+        android:focusable="false"/>
+
+
+
+
+    <Spinner
+        android:id="@+id/menu_Quantity"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:background="@drawable/edittext_shape"
+        android:layout_alignTop="@+id/checkId"
+        android:layout_centerHorizontal="true" />
+</LinearLayout>
+
+
+
+    <!-- check box -->
+    <CheckBox
+        android:id="@+id/checkId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/menu_Quantity"/>
+    <TextView
+        android:id="@+id/menu_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:singleLine="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/checkId"
+        android:visibility="invisible"
+        android:focusable="false"/>
+
+    <TextView
+        android:id="@+id/amountGuest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="50dp"
+        android:layout_toRightOf="@+id/menu_Quantity"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/spinnerValue"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/checkId"
+        android:layout_toRightOf="@+id/thumbinal"
+        android:visibility="invisible"/>
+
+
+</LinearLayout>
