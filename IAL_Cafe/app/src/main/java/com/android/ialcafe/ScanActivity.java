@@ -85,7 +85,7 @@ public class ScanActivity extends AppCompatActivity {
                 categorySelection(false);
             }
         });
-       
+
     }
 
     public void categorySelection(Boolean isWatched){
