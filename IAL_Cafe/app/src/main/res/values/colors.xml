@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-
-
-
+    <color name="c1">#68BBE3</color>
+    <color name="c2">#0E86D4</color>
+    <color name="c3">#055C9D</color>
+    <color name="c4">#003060</color>
 
     <color name="bg_login">#26ae90</color>
     <color name="bg_register">#2e3237</color>
@@ -22,7 +20,6 @@
     <color name="btn_logut_bg">#ff6861</color>
     <color name="page_background">#6e55ec</color>
     <color name="whole_background">#475ce1</color>
-    <color name="header_background">#203cec</color>
     <color name="spinner_backgroud">#f9f8e9</color>
     <color name="text_color">#4e2983</color>
     <color name="light_gray">#F0F0F0</color>

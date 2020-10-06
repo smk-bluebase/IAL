@@ -1,48 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".OrdersActivity">
 
-    <RelativeLayout
-        android:id="@+id/header"
+    <ImageView
+        android:id="@+id/background"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/header_background">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:text="@string/today_s_history"
-            android:textSize="25dp"
-            android:textColor="@color/white"
-            android:textColorHint="@color/input_login_hint"
-            android:textStyle="bold"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="10dp" />
-
-    </RelativeLayout>
+        android:layout_height="match_parent"
+        android:background="@drawable/application_background"
+        android:scaleX="2"
+        android:scaleY="3"
+        android:layout_marginEnd="100dp"
+        android:layout_marginRight="100dp" />
 
     <TextView
         android:id="@+id/dateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/header"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginLeft="10dp"
         android:text="2020-02-27"
         android:textSize="25dp"
         android:textColor="@color/black"
         android:textStyle="bold" />
-
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -54,7 +38,15 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:background="@drawable/background_container"
+            android:orientation="vertical"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp" >
 
             <TableLayout
                 android:id="@+id/tableHistory"
@@ -65,7 +57,7 @@
                 android:padding="5dp">
 
                 <TableRow
-                    android:background="@color/header_background"
+                    android:background="@color/c2"
                     android:padding="5dp">
 
                     <TextView
@@ -98,19 +90,6 @@
                 </TableRow>
 
             </TableLayout>
-
-<!--            <Button-->
-<!--                android:id="@+id/downloadCSV"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="@string/download_csv"-->
-<!--                android:layout_below="@id/tableHistory"-->
-<!--                android:layout_marginTop="15dp"-->
-<!--                android:layout_marginBottom="30dp"-->
-<!--                android:layout_centerHorizontal="true"-->
-<!--                android:textColor="@color/white"-->
-<!--                android:background="@color/header_background"-->
-<!--                android:padding="15dp"/>-->
 
         </RelativeLayout>
 

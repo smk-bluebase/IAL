@@ -23,7 +23,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         // Creating Tables
 
         // Employee Master
@@ -45,11 +44,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // Invoice Header
         String createInvoiceHeaderTable = "CREATE TABLE invoice_header (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, coupon_no INTEGER NOT NULL, item_id INTEGER NOT NULL, guest_id INTEGER NOT NULL, no_of_person INTEGER NOT NULL, quanty INTEGER NOT NULL, amount INTEGER NOT NULL, emp_code VARCHAR NOT NULL, rfid_card INTEGER NOT NULL, device_name VARCHAR NOT NULL, device VARCHAR NOT NULL, category_id INTEGER NOT NULL, otp_code INTEGER NOT NULL, date DATETIME NOT NULL, menu VARCHAR NOT NULL, shift INTEGER NOT NULL, transaction_date DATETIME NOT NULL, closed_time DATETIME NOT NULL, status VARCHAR NOT NULL, flag VARCHAR NOT NULL, created_by VARCHAR, created_on DATETIME, update_status VARCHAR, company_id INTEGER, flag_id INTEGER, guest_name varchar)";
         db.execSQL(createInvoiceHeaderTable);
-
-        // Invoice Header Sync
-        String createInvoiceHeaderSync = "CREATE TABLE invoice_header_sync ( id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, coupon_no INTEGER NOT NULL, item_id INTEGER NOT NULL, guest_id INTEGER NOT NULL, no_of_person INTEGER NOT NULL, quanty INTEGER NOT NULL, amount INTEGER NOT NULL, emp_code VARCHAR NOT NULL, rfid_card INTEGER NOT NULL, device_name VARCHAR NOT NULL, device VARCHAR NOT NULL, category_id INTEGER NOT NULL, otp_code INTEGER NOT NULL, date DATETIME NOT NULL, menu VARCHAR NOT NULL, shift INTEGER NOT NULL, transaction_date DATETIME NOT NULL, closed_time DATETIME NOT NULL, status VARCHAR NOT NULL, flag VARCHAR NOT NULL, created_by VARCHAR, created_on DATETIME, update_status VARCHAR, company_id INTEGER, flag_id INTEGER, guest_name varchar)";
-        db.execSQL(createInvoiceHeaderSync);
-
     }
 
     public void deleteCanteenTable(){
@@ -195,45 +189,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         cv.put("guest_name", guestName);
 
         db.insert("invoice_header", null, cv);
-        db.close();
-    }
-
-    public void deleteInvoiceHeaderSyncTable(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete("invoice_header_sync", null, null);
-        db.close();
-    }
-
-    public void insertInvoiceHeaderSyncTable(int couponNo, int itemId, int guestId, int noOfPerson, int quantity, Float amount, String empCode, int rfidCard, String deviceName, String device, int categoryId, int otpCode, String date, String menu, int shift, String transactionDate, String closedTime, String status, String flag, String createdBy, String createdOn, String updateStatus, int companyId, int flagId, String guestName){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("coupon_no", couponNo);
-        cv.put("item_id", itemId);
-        cv.put("guest_id", guestId);
-        cv.put("no_of_person", noOfPerson);
-        cv.put("quanty", quantity);
-        cv.put("amount", amount);
-        cv.put("emp_code", empCode);
-        cv.put("rfid_card", rfidCard);
-        cv.put("device_name", deviceName);
-        cv.put("device", device);
-        cv.put("category_id", categoryId);
-        cv.put("otp_code", otpCode);
-        cv.put("date", date);
-        cv.put("menu", menu);
-        cv.put("shift", shift);
-        cv.put("transaction_date", transactionDate);
-        cv.put("closed_time", closedTime);
-        cv.put("status", status);
-        cv.put("flag", flag);
-        cv.put("created_by", createdBy);
-        cv.put("created_on", createdOn);
-        cv.put("update_status", updateStatus);
-        cv.put("company_id", companyId);
-        cv.put("flag_id", flagId);
-        cv.put("guest_name", guestName);
-
-        db.insert("invoice_header_sync", null, cv);
         db.close();
     }
 

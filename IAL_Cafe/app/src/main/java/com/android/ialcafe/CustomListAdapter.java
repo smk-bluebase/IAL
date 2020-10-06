@@ -102,15 +102,15 @@ public class CustomListAdapter extends BaseAdapter{
         holder.menu_Title.setText(cantn_Item.getMenu_tittle());
         System.out.println("getMenu_tittle() : " + cantn_Item.getMenu_tittle());
         holder.menu_id.setText(cantn_Item.getMenu_id());
-        System.out.println("this test to drop down ........................"+cantn_Item.getDrop_count());
-        holder.menu_amount.setText( String.valueOf(cantn_Item.getMenu_amount()));
+        System.out.println("this test to drop down ........................" + cantn_Item.getDrop_count());
+        holder.menu_amount.setText(String.valueOf(cantn_Item.getMenu_amount()));
         holder.thumbinal_imageView.setImageResource(cantn_Item.getMenu_Image());
         ArrayAdapter dataAdapter;
 
         List valueList=new ArrayList();
         valueList.clear();
         for(int i=1;i<=cantn_Item.getDrop_count();i++) {
-        valueList.add(i);
+            valueList.add(i);
         }
         dataAdapter = new ArrayAdapter(context,android.R.layout.simple_spinner_item,valueList);
 
