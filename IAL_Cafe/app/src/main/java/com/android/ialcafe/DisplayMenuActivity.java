@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,12 +64,15 @@ public class DisplayMenuActivity extends AppCompatActivity {
 
     JsonObject jsonObject;
     String urlCheckInvoiceHeader = CommonUtils.IP + "/ialcafe/check_invoice_header.php";
-    int quantityUsed = 0;
-    String startingTime = "";
-    String endingTime = "";
+    int quantity = 0;
+    String startTime = "";
+    String endTime = "";
 
     boolean quantityGot = true;
     Handler handler = new Handler();
+    boolean quantityEntry = false;
+
+    int progressStatus = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +93,6 @@ public class DisplayMenuActivity extends AppCompatActivity {
 
         Bundle retrieveIntent = getIntent().getExtras();
         date = retrieveIntent.getString("date");
-        System.out.println("date : " + date);
         currentTime = retrieveIntent.getString("currentTime");
         rfidNo = retrieveIntent.getString("rfidNo");
         deviceName = retrieveIntent.getString("deviceName");
@@ -128,73 +133,125 @@ public class DisplayMenuActivity extends AppCompatActivity {
     }
 
     public void menu_display() {
+
+        try{
+            SQLiteDatabase myDatabase = openOrCreateDatabase("ial.sqlite", MODE_ENABLE_WRITE_AHEAD_LOGGING, null);
+            Cursor resultSet1 = myDatabase.rawQuery(String.format("SELECT MENU, START_TIME, END_TIME FROM CANTEEN WHERE \'%s\' >= start_time AND \'%s\' <= end_time", currentTime, currentTime), null);
+            resultSet1.moveToFirst();
+
+            if(resultSet1.getCount() > 0) {
+                int availableMenuId = resultSet1.getInt(0);
+                startTime = resultSet1.getString(1);
+                endTime = resultSet1.getString(2);
+
+                resultSet1.close();
+//                Cursor resultSet2 = myDatabase.rawQuery(String.format("SELECT * FROM canteen_menu cm JOIN item_master i ON cm.item_id=i.item_id WHERE cm.canteen_id IN (3, 4) AND cm.status = 0 GROUP BY cm.item_id", availableMenuId), null);
+                Cursor resultSet2 = myDatabase.rawQuery(String.format("SELECT * FROM canteen_menu cm JOIN item_master i ON cm.item_id=i.item_id WHERE cm.canteen_id = %d AND cm.status = 0", availableMenuId), null);
+                resultSet2.moveToFirst();
+
+                int i = 0;
+                while (i < resultSet2.getCount()) {
+                    int iniMax = resultSet2.getInt(resultSet2.getColumnIndex("ini_max"));
+                    int itemId = resultSet2.getInt(resultSet2.getColumnIndex("item_id"));
+                    String itemName = resultSet2.getString(resultSet2.getColumnIndex("item_name"));
+                    String imageName = resultSet2.getString(resultSet2.getColumnIndex("image"));
+                    imageName = imageName.substring(0, imageName.indexOf("."));
+                    float itemAmount = resultSet2.getFloat(resultSet2.getColumnIndex("employee_amount"));
+                    int dropCount = Integer.parseInt(resultSet2.getString(resultSet2.getColumnIndex("drop_count")));
+
+                    if (availableMenuId == 4 && vegNonVeg == 1) {
+                        if (itemId == 4 || itemId == 45 || itemId == 46) {
+                            resultSet2.moveToNext();
+                            i++;
+                            continue;
+                        }
+                    }
+
+                    CanteenMenu CantBean = new CanteenMenu();
+
+                    CantBean.setMenu_tittle(itemName);
+                    CantBean.setMenu_amount(itemAmount);
+                    CantBean.setMenu_id(String.valueOf(itemId));
+                    CantBean.setDrop_count(dropCount);
+                    CantBean.setMenu_Image(context.getResources().getIdentifier(imageName, "drawable", context.getPackageName()));
+
+                    item_List.add(CantBean);
+
+                    resultSet2.moveToNext();
+                    i++;
+                }
+
+                resultSet2.close();
+                myDatabase.close();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        checkItemsQuantity();
+    }
+
+    public void checkItemsQuantity(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setTitle("IAL Cafe");
+        alertDialogBuilder.setMessage("Checking Item Availability.........");
+
+        LayoutInflater inflater =  (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogView = inflater.inflate(R.layout.progress_dialogs, null);
+        alertDialogBuilder.setView(dialogView);
+
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
+        final ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
+        Drawable progressDrawable = progressBar.getProgressDrawable().mutate();
+        progressDrawable.setColorFilter(Color.BLUE, android.graphics.PorterDuff.Mode.SRC_IN);
+        progressBar.setProgressDrawable(progressDrawable);
+
         new Thread(new Runnable() {
+            int i = 0;
+            List<CanteenMenu> remove_list = new ArrayList<>();
+            int increament_status = 100/item_List.size();
             @Override
             public void run() {
+                while(i < item_List.size()) {
+                    CanteenMenu canteenMenu = item_List.get(i);
+                    if (quantityGot) {
+                        quantityGot = false;
 
-                if(quantityGot){
-                    try{
-                        SQLiteDatabase myDatabase = openOrCreateDatabase("ial.sqlite", MODE_ENABLE_WRITE_AHEAD_LOGGING, null);
-                        Cursor resultSet1 = myDatabase.rawQuery(String.format("SELECT MENU, START_TIME, END_TIME FROM CANTEEN WHERE \'%s\' >= start_time AND \'%s\' <= end_time", currentTime, currentTime), null);
-                        resultSet1.moveToFirst();
+                        jsonObject = new JsonObject();
+                        jsonObject.addProperty("empCode", empCode);
+                        jsonObject.addProperty("itemId", canteenMenu.getMenu_id());
 
-                        if(resultSet1.getCount() > 0) {
-                            int availableMenuId = resultSet1.getInt(0);
-                            String startTime = resultSet1.getString(1);
-                            String endTime = resultSet1.getString(2);
+                        PostGetItemQuantity postGetItemQuantity = new PostGetItemQuantity(context);
+                        postGetItemQuantity.checkServerAvailability(0);
 
-                            resultSet1.close();
-//                Cursor resultSet2 = myDatabase.rawQuery(String.format("SELECT * FROM canteen_menu cm JOIN item_master i ON cm.item_id=i.item_id WHERE cm.canteen_id IN (3, 4) AND cm.status = 0 GROUP BY cm.item_id", availableMenuId), null);
-                            Cursor resultSet2 = myDatabase.rawQuery(String.format("SELECT * FROM canteen_menu cm JOIN item_master i ON cm.item_id=i.item_id WHERE cm.canteen_id = %d AND cm.status = 0", availableMenuId), null);
-                            resultSet2.moveToFirst();
+                        quantityEntry = false;
+                    }
+                    if(quantityEntry){
+                        quantityGot = true;
 
-                            int i = 0;
-                            while (i < resultSet2.getCount()) {
-                                int iniMax = resultSet2.getInt(resultSet2.getColumnIndex("ini_max"));
-                                int itemId = resultSet2.getInt(resultSet2.getColumnIndex("item_id"));
-                                String itemName = resultSet2.getString(resultSet2.getColumnIndex("item_name"));
-                                String imageName = resultSet2.getString(resultSet2.getColumnIndex("image"));
-                                imageName = imageName.substring(0, imageName.indexOf("."));
-                                float itemAmount = resultSet2.getFloat(resultSet2.getColumnIndex("employee_amount"));
-                                int dropCount = Integer.parseInt(resultSet2.getString(resultSet2.getColumnIndex("drop_count")));
-
-                                if (availableMenuId == 4 && vegNonVeg == 1) {
-                                    if (itemId == 4 || itemId == 45 || itemId == 46) {
-                                        resultSet2.moveToNext();
-                                        i++;
-                                        continue;
-                                    }
-                                }
-
-                                int quantityUsed = checkItemsQuantity(myDatabase, itemId, startTime, endTime);
-
-                                if (quantityUsed < dropCount) {
-                                    CanteenMenu CantBean = new CanteenMenu();
-
-                                    CantBean.setMenu_tittle(itemName);
-                                    CantBean.setMenu_amount(itemAmount);
-                                    CantBean.setMenu_quantity(dropCount - quantityUsed);
-                                    CantBean.setMenu_id(String.valueOf(itemId));
-                                    CantBean.setDrop_count(dropCount - quantityUsed);
-                                    CantBean.setMenu_Image(context.getResources().getIdentifier(imageName, "drawable", context.getPackageName()));
-
-                                    item_List.add(CantBean);
-                                }
-
-                                resultSet2.moveToNext();
-                                i++;
-
-                                quantityGot = false;
-                            }
-
-                            resultSet2.close();
-                            myDatabase.close();
+                        int dropCount = canteenMenu.getDrop_count();
+                        if(quantity < dropCount){
+                            canteenMenu.setMenu_quantity(dropCount - quantity);
+                            canteenMenu.setDrop_count(dropCount - quantity);
+                        }else{
+                            remove_list.add(canteenMenu);
                         }
-                    }catch(Exception e){
-                        e.printStackTrace();
+
+                        progressStatus += increament_status;
+                        progressBar.setProgress(progressStatus);
+                        i++;
                     }
                 }
 
+                for(int j = 0; j < remove_list.size(); j++){
+                    CanteenMenu canteenMenu = remove_list.get(j);
+                    item_List.remove(canteenMenu);
+                }
+
+                alertDialog.dismiss();
                 handler.post(new Runnable() {
                     public void run() {
                         CustomListAdapter adapter = new CustomListAdapter(context, item_List);
@@ -203,52 +260,7 @@ public class DisplayMenuActivity extends AppCompatActivity {
                 });
             }
         }).start();
-    }
 
-    public int checkItemsQuantity(SQLiteDatabase myDatabase, int itemId, String startTime, String endTime){
-        int quantityUsed = 0;
-
-        try {
-            System.out.println("empCode : " + empCode + " item_id : " + itemId);
-            Cursor resultSet3 = myDatabase.rawQuery(String.format("SELECT * FROM invoice_header WHERE date = DATE('now') AND emp_code = \'%s\' AND item_id = %d", empCode, itemId), null);
-            resultSet3.moveToFirst();
-
-            int j = 0;
-            while (j < resultSet3.getCount()) {
-                Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(resultSet3.getString(16));
-                String time = new SimpleDateFormat("HH:mm:ss").format(date);
-
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-
-                if(sdf.parse(time).after(sdf.parse(startTime)) && sdf.parse(time).before(sdf.parse(endTime))) {
-                    quantityUsed += resultSet3.getInt(5);
-                }
-
-                resultSet3.moveToNext();
-                j++;
-            }
-
-            resultSet3.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("quantity : " + quantityUsed);
-
-        System.out.println("empCode : " + empCode);
-        System.out.println("itemId : " + itemId);
-
-        jsonObject = new JsonObject();
-        jsonObject.addProperty("empCode", empCode);
-        jsonObject.addProperty("itemId", itemId);
-
-        startingTime = startTime;
-        endingTime = endTime;
-
-        PostGetItemQuantity postGetItemQuantity = new PostGetItemQuantity(context);
-        postGetItemQuantity.checkServerAvailability(0);
-
-        return quantityUsed;
     }
 
     public void popup_show() {
@@ -433,19 +445,19 @@ public class DisplayMenuActivity extends AppCompatActivity {
         }
 
         public void onFinish(JSONArray jsonArray){
-            quantityUsed = 0;
+            quantity = 0;
 
             try{
                 int j = 0;
                 while (j < jsonArray.length()) {
                     JSONObject jsonObject = (JSONObject) jsonArray.get(j);
-                    Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(jsonObject.getString("transactionDate"));
+                    Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(jsonObject.getString("createdOn"));
                     String time = new SimpleDateFormat("HH:mm:ss").format(date);
 
                     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
-                    if(sdf.parse(time).after(sdf.parse(startingTime)) && sdf.parse(time).before(sdf.parse(endingTime))) {
-                        quantityUsed += jsonObject.getInt("quantity");
+                    if(sdf.parse(time).after(sdf.parse(startTime)) && sdf.parse(time).before(sdf.parse(endTime))) {
+                        quantity += jsonObject.getInt("quantity");
                     }
 
                     j++;
@@ -454,8 +466,7 @@ public class DisplayMenuActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            System.out.println("Server quantity : " + quantityUsed);
-            quantityGot = true;
+            quantityEntry = true;
         }
     }
 
