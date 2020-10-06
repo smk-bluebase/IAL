@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/application_background"
+        android:scaleX="2"
+        android:scaleY="3"
+        android:layout_marginEnd="100dp"
+        android:layout_marginRight="100dp" />
 
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/header_background">
+        android:background="@color/c2">
 
         <TextView
             android:id="@+id/empName"
@@ -42,55 +51,47 @@
 
     </RelativeLayout>
 
-    <ScrollView
-        android:id="@+id/scrollView"
+    <LinearLayout
+        android:id="@+id/layout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/header">
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/header"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/background_container"
+        android:layout_marginBottom="60dp"
+        android:paddingTop="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/layout2"
+        <ListView
+            android:id="@+id/list_vw"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" >
+        </ListView>
+
+        <Button
+            android:id="@+id/submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_below="@id/rfidNo"
+            android:layout_marginTop="20dp"
+            android:background="@color/c4"
+            android:textColor="@color/white"
+            android:layout_marginBottom="20dp"
+            android:text="SUBMIT" />
 
-            <ListView
-                android:id="@+id/list_vw_dd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp">
-            </ListView>
+    </LinearLayout>
 
-            <ListView
-                android:id="@+id/list_vw"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp">
-            </ListView>
-
-            <RelativeLayout
-                android:id="@+id/footer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@+id/scrollView"
-                android:background="@color/header_background">
-
-                <Button
-                    android:id="@+id/okButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/submit"
-                    android:textColor="@color/whole_background"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-    </ScrollView>
+    <View
+        android:layout_width="112dp"
+        android:layout_height="51dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/logo_website"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

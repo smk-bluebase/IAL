@@ -8,11 +8,20 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static android.graphics.Color.*;
 
 
 public class OrdersActivity extends AppCompatActivity {
@@ -27,9 +36,21 @@ public class OrdersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders);
 
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        height = (int) (height / 1.7);
+
+        ImageView background = findViewById(R.id.background);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, 0, 200, height);
+        background.setLayoutParams(layoutParams);
+
         Bundle retrieveIntent = getIntent().getExtras();
         date = retrieveIntent.getString("date");
         deviceName = retrieveIntent.getString("deviceName");
+
+        getSupportActionBar().setTitle("Today's History");
 
         TableLayout tableLayout = findViewById(R.id.tableHistory);
 
@@ -39,19 +60,28 @@ public class OrdersActivity extends AppCompatActivity {
 
         boolean hasNext = true;
         int i = 0;
+        boolean isBlack = false;
 
         while(hasNext){
             try{
                 JsonObject jsonObject = (JsonObject) orders.get(String.valueOf(i));
-                createTableRow(tableLayout, jsonObject);
+                createTableRow(tableLayout, jsonObject, isBlack);
+                if(isBlack) isBlack = false;
+                else isBlack = true;
                 i++;
             }catch(Exception e){
                 hasNext = false;
             }
         }
 
-        TextView dateTextView = findViewById(R.id.dateText);
-        dateTextView.setText(date.toString());
+        try {
+            TextView dateTextView = findViewById(R.id.dateText);
+            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date d = sdf.parse(date);
+            dateTextView.setText(new SimpleDateFormat("dd-MM-yyyy").format(d));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void checkDate(){
@@ -104,7 +134,7 @@ public class OrdersActivity extends AppCompatActivity {
         return todaysOrders;
     }
 
-    public void createTableRow(TableLayout tableLayout, JsonObject jsonObject){
+    public void createTableRow(TableLayout tableLayout, JsonObject jsonObject, boolean isBlack){
         String empCode = jsonObject.get("empCode").toString();
         String itemName = jsonObject.get("itemName").getAsString();
         String quantity = jsonObject.get("quantity").toString();
@@ -115,27 +145,28 @@ public class OrdersActivity extends AppCompatActivity {
 
         TableRow tableRow = new TableRow(this);
         tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
-        tableRow.setBackgroundColor(getResources().getColor(R.color.light_gray));
+        if(isBlack) tableRow.setBackgroundColor(Color.rgb(220, 220, 220));
+        else tableRow.setBackgroundColor(getResources().getColor(R.color.white));
         tableRow.setPadding(20, 20, 20, 20);
 
         TextView textView1 = new TextView(this);
         textView1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-        textView1.setTextColor(Color.BLACK);
+        textView1.setTextColor(BLACK);
         textView1.setText(empCode);
 
         TextView textView2 = new TextView(this);
         textView2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-        textView2.setTextColor(Color.BLACK);
+        textView2.setTextColor(BLACK);
         textView2.setText(itemName);
 
         TextView textView3 = new TextView(this);
         textView3.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-        textView3.setTextColor(Color.BLACK);
+        textView3.setTextColor(BLACK);
         textView3.setText(quantity);
 
         TextView textView4 = new TextView(this);
         textView4.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-        textView4.setTextColor(Color.BLACK);
+        textView4.setTextColor(BLACK);
         textView4.setText(time);
 
         tableRow.addView(textView1);

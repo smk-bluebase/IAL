@@ -12,11 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -39,9 +42,19 @@ public class ScanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
 
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        height = (int) (height / 1.7);
+
+        ImageView background = findViewById(R.id.background);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, 0, 200, height);
+        background.setLayoutParams(layoutParams);
+
         dateStr = new SimpleDateFormat("yyyy-MM-dd").format(Date.parse(date.toString()));
 
-        rfid = findViewById(R.id.txt_Employee_code);
+        rfid = findViewById(R.id.rfidNo);
 
         Bundle retrieveIntent = getIntent().getExtras();
         deviceName = retrieveIntent.getString("deviceName");
@@ -65,8 +78,8 @@ public class ScanActivity extends AppCompatActivity {
             }
         });
 
-        Button ok = findViewById(R.id.ok);
-        ok.setOnClickListener(new View.OnClickListener() {
+        Button submit = findViewById(R.id.submit);
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 categorySelection(false);
@@ -148,11 +161,6 @@ public class ScanActivity extends AppCompatActivity {
                 updateLocal.checkServerAvailability(2);
                 return true;
 
-            case R.id.menu_sync:
-                UpdateServer updateServer = new UpdateServer(context);
-                updateServer.checkServerAvailability(2);
-                return true;
-
             case R.id.menu_orders:
                 Intent i  = new Intent(ScanActivity.this, OrdersActivity.class);
                 i.putExtra("date", dateStr);
@@ -177,7 +185,7 @@ public class ScanActivity extends AppCompatActivity {
                 alertDialogBuilder.setCancelable(false);
                 alertDialogBuilder.setTitle("IAL Cafe");
                 alertDialogBuilder.setMessage("Connection to Server not Available!");
-                alertDialogBuilder.setNeutralButton(android.R.string.ok,
+                alertDialogBuilder.setPositiveButton(android.R.string.ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
@@ -188,10 +196,10 @@ public class ScanActivity extends AppCompatActivity {
                 alertDialog.show();
             }else {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                alertDialogBuilder.setCancelable(false);
+                alertDialogBuilder.setCancelable(true);
                 alertDialogBuilder.setTitle("IAL Cafe");
                 alertDialogBuilder.setMessage("Do you want to update database?");
-                alertDialogBuilder.setNeutralButton(android.R.string.ok,
+                alertDialogBuilder.setPositiveButton(android.R.string.ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 UpdateLocal updateLocal = new UpdateLocal(context);
@@ -209,56 +217,6 @@ public class ScanActivity extends AppCompatActivity {
 
         }
     }
-
-    private class UpdateServer extends UpdateServerDatabase {
-        public UpdateServer(Context context){
-            super(context);
-        }
-        public void serverAvailability(boolean isServerAvailable){
-            if(!isServerAvailable) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                alertDialogBuilder.setCancelable(false);
-                alertDialogBuilder.setTitle("IAL Cafe");
-                alertDialogBuilder.setMessage("Connection to Server not Available!");
-                alertDialogBuilder.setNeutralButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-
-                final AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-            }else {
-                try{
-                    SQLiteDatabase myDatabase = openOrCreateDatabase("ial.sqlite", MODE_ENABLE_WRITE_AHEAD_LOGGING, null);
-                    Cursor resultSet = myDatabase.rawQuery("SELECT * FROM INVOICE_HEADER_SYNC", null);
-                    if(resultSet.getCount() == 0){
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                        alertDialogBuilder.setCancelable(false);
-                        alertDialogBuilder.setTitle("IAL Cafe");
-                        alertDialogBuilder.setMessage("No New Entries!");
-                        alertDialogBuilder.setNeutralButton(android.R.string.ok,
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-
-                        final AlertDialog alertDialog = alertDialogBuilder.create();
-                        alertDialog.show();
-                    }else {
-                        super.uploadToServer();
-                    }
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        public void onPostUpdate(){}
-    }
-
 
     @Override
     public void onBackPressed() {

@@ -1,102 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <LinearLayout
-        android:id="@+id/layout1"
+    <ImageView
+        android:id="@+id/background"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/header_background">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginLeft="10dp"
-            android:text="@string/indian_additives_limited"
-            android:textSize="20sp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:textColor="@color/white"
-            android:textColorHint="@color/input_login_hint"
-            android:textStyle="bold"
-            android:layout_marginStart="10dp" />
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:background="@drawable/application_background"
+        android:scaleX="2"
+        android:scaleY="3"
+        android:layout_marginEnd="100dp"
+        android:layout_marginRight="100dp" />
 
     <LinearLayout
-        android:id="@+id/layout2"
-        android:layout_below="@+id/layout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="90dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/background_container"
         android:orientation="vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:layout_marginTop="50dp">
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp">
 
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            app:srcCompat="@drawable/logo1"
-            android:contentDescription="@string/chevron_logo"/>
-
-        <EditText
-            android:id="@+id/usernameid"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@color/btn_login"
-            android:hint="@string/devicename"
-            android:focusable="true"
-            android:inputType="none"
-            android:padding="10dp"
-            android:layout_marginTop="20dp"
-            android:singleLine="true"
-            android:textColor="@color/input_login"
-            android:textColorHint="@color/input_login_hint"
-            android:autofillHints="" tools:targetApi="o" />
+            android:layout_marginTop="20dp">
 
+            <ImageView
+                android:id="@+id/chevronLogo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/logo1" />
+
+            <TextView
+                android:id="@+id/loginTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="LOGIN"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/c1"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
 
         <EditText
-            android:id="@+id/passwordId"
+            android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@color/btn_login"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            android:padding="10dp"
-            android:singleLine="true"
-            android:textColor="@color/input_login"
-            android:textColorHint="@color/input_login_hint"
-            android:importantForAutofill="no" />
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black"
+            android:hint="UserName"
+            android:layout_below="@id/loginTitle"/>
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/username"
+            android:layout_marginTop="10dp"
+            android:hint="Password"
+            android:textColor="@color/black" />
 
         <Button
-            android:id="@+id/btnLogin"
-            android:layout_width="150dp"
+            android:id="@+id/login"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/login_button"
-            android:textColor="@color/btn_login"
-            android:textSize="16sp"
-            android:text="@string/login" />
+            android:layout_below="@id/password"
+            android:layout_marginTop="10dp"
+            android:background="@color/c4"
+            android:textColor="@color/white"
+            android:layout_marginBottom="20dp"
+            android:text="Login" />
 
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        app:srcCompat="@drawable/logo_website"
-        android:background="@color/white"
-        android:layout_alignParentBottom="true"
+    <View
+        android:layout_width="112dp"
+        android:layout_height="51dp"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:contentDescription="@string/bluebase_logo"/>
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/logo_website"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

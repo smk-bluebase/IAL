@@ -1,17 +1,11 @@
 package com.android.ialcafe;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import com.google.gson.JsonObject;
 
@@ -26,10 +20,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.Iterator;
 
-import androidx.appcompat.app.AlertDialog;
 
 public abstract class UpdateServerDatabase {
 
@@ -83,110 +75,6 @@ public abstract class UpdateServerDatabase {
         asyncPostRequest.execute(data, String.valueOf(isSync));
 
         System.out.println("data : " + data);
-    }
-
-    public void uploadToServer(){
-        final JsonObject entries = new JsonObject();
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setTitle("IAL Cafe");
-        alertDialogBuilder.setMessage("Upload to Server Database......");
-
-        LayoutInflater inflater =  (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View dialogView = inflater.inflate(R.layout.progress_dialogs, null);
-        alertDialogBuilder.setView(dialogView);
-
-        final AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-
-        final ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
-        Drawable progressDrawable = progressBar.getProgressDrawable().mutate();
-        progressDrawable.setColorFilter(Color.BLUE, android.graphics.PorterDuff.Mode.SRC_IN);
-        progressBar.setProgressDrawable(progressDrawable);
-
-        progressBar.setProgress(0);
-
-        try{
-            Cursor resultSet = myDatabase.rawQuery(String.format("SELECT * FROM INVOICE_HEADER_SYNC"), null);
-            resultSet.moveToFirst();
-
-            int i = 0;
-            while(i < resultSet.getCount()){
-                JsonObject jsonObject = new JsonObject();
-
-                jsonObject.addProperty("coupon_no", resultSet.getString(1));
-                jsonObject.addProperty("item_id", resultSet.getString(2));
-                jsonObject.addProperty("guest_id", resultSet.getString(3));
-                jsonObject.addProperty("no_of_person", resultSet.getString(4));
-                jsonObject.addProperty("quanty", resultSet.getString(5));
-                jsonObject.addProperty("amount", resultSet.getString(6));
-                jsonObject.addProperty("emp_code", resultSet.getString(7));
-                jsonObject.addProperty("rfid_card", resultSet.getString(8));
-                jsonObject.addProperty("device_name", resultSet.getString(9));
-                jsonObject.addProperty("device", resultSet.getString(10));
-                jsonObject.addProperty("category_id", resultSet.getString(11));
-                jsonObject.addProperty("otp_code", resultSet.getString(12));
-                jsonObject.addProperty("date", resultSet.getString(16));
-                jsonObject.addProperty("menu", resultSet.getString(14));
-                jsonObject.addProperty("shift", resultSet.getString(15));
-                jsonObject.addProperty("transaction_date", resultSet.getString(16));
-                jsonObject.addProperty("closed_time", resultSet.getString(17));
-                jsonObject.addProperty("status", resultSet.getString(18));
-                jsonObject.addProperty("flag", resultSet.getString(19));
-                jsonObject.addProperty("created_by", resultSet.getString(20));
-
-                entries.add(String.valueOf(i), jsonObject);
-
-                progressBar.setProgress(50);
-
-                resultSet.moveToNext();
-                i++;
-            }
-
-            resultSet.close();
-
-            DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
-            dataBaseHelper.deleteInvoiceHeaderSyncTable();
-            dataBaseHelper.close();
-
-            progress = new Boolean[i];
-            Arrays.fill(progress, false);
-
-            int j = 0;
-            while(j < i){
-                updateTableInvoiceHeader((JsonObject) entries.get(String.valueOf(j)), true);
-                j++;
-            }
-
-            new Thread(new Runnable() {
-                int i = 0;
-                int progressStatus = 50;
-                @Override
-                public void run() {
-                    while(i < progress.length){
-                        try{
-                            if (progress[i]) {
-                                progressStatus += (int) 50/progress.length;
-                                progressBar.setProgress(progressStatus);
-                                i++;
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    alertDialog.dismiss();
-                    handler.post(new Runnable() {
-                        public void run() {
-                            onPostUpdate();
-                        }
-                    });
-                }
-            }).start();
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
     }
 
     private class AsyncCheckAvailability extends AsyncTask<String, Boolean, Boolean>{
