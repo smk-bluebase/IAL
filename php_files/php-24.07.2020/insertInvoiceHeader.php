@@ -1,10 +1,8 @@
 <?php
-define('HOST', 'localhost');
-define('USER', 'root');
-define('PASS','smk12345');
-define('DB','ial');
+require("config.php");
 
-$con = mysqli_connect(HOST, USER, PASS, DB);
+$db = new DB_Connect();
+$con = $db->connect();
  
 $sql_query = "SELECT coupon_no FROM INVOICE_HEADER ORDER BY id DESC LIMIT 1";
 
@@ -43,20 +41,10 @@ $sql_query = "INSERT INTO INVOICE_HEADER (coupon_no, item_id, guest_id, no_of_pe
 $result = mysqli_query($con, $sql_query);
 
 if($result){
-	echo json_encode(array("status" => "true"));
+	echo json_encode(array("status"=>"true"));
 }else{
-	echo json_encode(array("status" => "false"));
+	echo json_encode(array("status"=>"false"));
 }
-
-// $myObj = array();
-
-// array_push($myObj, array("coupon_no"=>$coupon_no));
-
-// array_push($myObj, array("coupon_no"=>$coupon_no, "item_id"=>$item_id, "sql"=>$sql_query));
-
-// $myJSON = json_encode($myObj);
-
-// echo $myJSON;
 
 mysqli_close($con);
 ?>
