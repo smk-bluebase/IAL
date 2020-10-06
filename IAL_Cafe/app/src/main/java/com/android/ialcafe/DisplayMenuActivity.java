@@ -73,6 +73,7 @@ public class DisplayMenuActivity extends AppCompatActivity {
     boolean quantityEntry = false;
 
     int progressStatus = 0;
+    boolean isMenuItemCheckAvailable = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +113,8 @@ public class DisplayMenuActivity extends AppCompatActivity {
 
         updateRemoteDatabase = new UpdateRemoteDatabase(context);
 
-        menu_display();
+        CheckServer checkServer = new CheckServer(context);
+        checkServer.checkServerAvailability(1);
 
         TextView empNameTextView = findViewById(R.id.empName);
         empNameTextView.setText(empName);
@@ -125,6 +127,7 @@ public class DisplayMenuActivity extends AppCompatActivity {
         confirmIdButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isMenuItemCheckAvailable = false;
                 CheckServer checkServer = new CheckServer(context);
                 checkServer.checkServerAvailability(1);
             }
@@ -225,7 +228,7 @@ public class DisplayMenuActivity extends AppCompatActivity {
                         jsonObject.addProperty("itemId", canteenMenu.getMenu_id());
 
                         PostGetItemQuantity postGetItemQuantity = new PostGetItemQuantity(context);
-                        postGetItemQuantity.checkServerAvailability(0);
+                        postGetItemQuantity.checkServerAvailability(1);
 
                         quantityEntry = false;
                     }
@@ -424,7 +427,11 @@ public class DisplayMenuActivity extends AppCompatActivity {
                 final AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
             }else{
-                popup_show();
+                if(isMenuItemCheckAvailable){
+                    menu_display();
+                }else {
+                    popup_show();
+                }
             }
         }
 
@@ -441,6 +448,7 @@ public class DisplayMenuActivity extends AppCompatActivity {
                 super.postRequest(urlCheckInvoiceHeader, jsonObject);
             }else{
                 Toast.makeText(getApplicationContext(), "Connection to Network \nnot Available", Toast.LENGTH_SHORT).show();
+                quantityEntry = true;
             }
         }
 
