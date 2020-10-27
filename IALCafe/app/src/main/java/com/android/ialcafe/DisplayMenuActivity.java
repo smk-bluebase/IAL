@@ -148,7 +148,6 @@ public class DisplayMenuActivity extends AppCompatActivity {
                 endTime = resultSet1.getString(2);
 
                 resultSet1.close();
-//                Cursor resultSet2 = myDatabase.rawQuery(String.format("SELECT * FROM canteen_menu cm JOIN item_master i ON cm.item_id=i.item_id WHERE cm.canteen_id IN (3, 4) AND cm.status = 0 GROUP BY cm.item_id", availableMenuId), null);
                 Cursor resultSet2 = myDatabase.rawQuery(String.format("SELECT * FROM canteen_menu cm JOIN item_master i ON cm.item_id=i.item_id WHERE cm.canteen_id = %d AND cm.status = 0", availableMenuId), null);
                 resultSet2.moveToFirst();
 
