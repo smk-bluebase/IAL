@@ -229,6 +229,7 @@ public class DisplayMenuActivity extends AppCompatActivity {
 
                         PostGetItemQuantity postGetItemQuantity = new PostGetItemQuantity(context);
                         postGetItemQuantity.checkServerAvailability(1);
+                        postGetItemQuantity.checkServerAvailability(0);
 
                         quantityEntry = false;
                     }

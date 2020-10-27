@@ -1,11 +1,8 @@
 <?php
-define('HOST','localhost');
-define('USER','root');
-define('PASS','smk12345');
-define('DB','ial');
+require("config.php");
 
- 
-$con = mysqli_connect(HOST,USER,PASS,DB);
+$db = new DB_Connect();
+$con = $db->connect();
  
 $sql = "SELECT * FROM  employee_master";
  
