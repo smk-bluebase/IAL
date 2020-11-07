@@ -23,7 +23,6 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 
 public abstract class PostRequest {
-
     Context context;
 
     public PostRequest(Context context){
@@ -150,8 +149,4 @@ public abstract class PostRequest {
     public abstract void serverAvailability(boolean isServerAvailable);
 
     public abstract void onFinish(JSONArray jsonArray);
-
-    protected void finalize(){
-
-    }
 }

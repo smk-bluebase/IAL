@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -133,7 +135,7 @@ public class OrdersActivity extends AppCompatActivity {
         return todaysOrders;
     }
 
-    public void createTableRow(TableLayout tableLayout, JsonObject jsonObject, boolean isBlack){
+    public void createTableRow(TableLayout tableLayout, JsonObject jsonObject, boolean isGrey){
         String empCode = jsonObject.get("empCode").toString();
         String itemName = jsonObject.get("itemName").getAsString();
         String quantity = jsonObject.get("quantity").toString();
@@ -144,27 +146,35 @@ public class OrdersActivity extends AppCompatActivity {
 
         TableRow tableRow = new TableRow(this);
         tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
-        if(isBlack) tableRow.setBackgroundColor(Color.rgb(220, 220, 220));
+        if(isGrey) tableRow.setBackgroundColor(Color.rgb(220, 220, 220));
         else tableRow.setBackgroundColor(getResources().getColor(R.color.white));
         tableRow.setPadding(20, 20, 20, 20);
 
         TextView textView1 = new TextView(this);
-        textView1.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        TableRow.LayoutParams tableRowLayoutParams1 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+        tableRowLayoutParams1.setMargins(0, 0,5,0);
+        textView1.setLayoutParams(tableRowLayoutParams1);
         textView1.setTextColor(BLACK);
         textView1.setText(empCode);
 
         TextView textView2 = new TextView(this);
-        textView2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        TableRow.LayoutParams tableRowLayoutParams2 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+        tableRowLayoutParams2.setMargins(0, 0,5,0);
+        textView2.setLayoutParams(tableRowLayoutParams2);
         textView2.setTextColor(BLACK);
         textView2.setText(itemName);
 
         TextView textView3 = new TextView(this);
-        textView3.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        TableRow.LayoutParams tableRowLayoutParams3 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+        tableRowLayoutParams3.setMargins(0, 0,5,0);
+        textView3.setLayoutParams(tableRowLayoutParams3);
         textView3.setTextColor(BLACK);
         textView3.setText(quantity);
 
         TextView textView4 = new TextView(this);
-        textView4.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        TableRow.LayoutParams tableRowLayoutParams4 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+        tableRowLayoutParams4.setMargins(0, 0,5,0);
+        textView4.setLayoutParams(tableRowLayoutParams4);
         textView4.setTextColor(BLACK);
         textView4.setText(time);
 
@@ -174,6 +184,29 @@ public class OrdersActivity extends AppCompatActivity {
         tableRow.addView(textView4);
 
         tableLayout.addView(tableRow);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.basic_menu, menu);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent i = new Intent(OrdersActivity.this, ScanActivity.class);
+                i.putExtra("deviceName", deviceName);
+                startActivity(i);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
     @Override

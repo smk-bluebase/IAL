@@ -7,12 +7,12 @@
     android:paddingRight="10dp">
 
     <ImageView
-        android:id="@+id/thumbinal"
+        android:id="@+id/thumbNail"
         android:layout_width="50dp"
         android:layout_height="50dp"/>
 
     <TextView
-        android:id="@+id/menu_title"
+        android:id="@+id/itemTitle"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -20,40 +20,28 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/menu_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible" />
-
     <Spinner
-        android:id="@+id/menu_Quantity"
+        android:id="@+id/itemQuantitySpinner"
         android:layout_width="50dp"
         android:layout_height="30dp"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/thumbNail"
+        android:background="@drawable/drop_down" />
+
+    <EditText
+        android:id="@+id/itemQuantity"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/thumbinal"
-        android:background="@drawable/edittext_shape" />
+        android:inputType="number" />
 
     <CheckBox
-        android:id="@+id/checkId"
+        android:id="@+id/itemCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="5dp"
         android:layout_toRightOf="@+id/title" />
-
-    <TextView
-        android:id="@+id/menuAm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible" />
-
-    <TextView
-        android:id="@+id/menu_selectQuanty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible" />
 
 </LinearLayout>
