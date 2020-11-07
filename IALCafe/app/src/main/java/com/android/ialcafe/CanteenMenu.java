@@ -1,82 +1,68 @@
 package com.android.ialcafe;
 
-import android.widget.ArrayAdapter;
-
 public class CanteenMenu {
+    private String menuTitle;
+    private String menuId;
+    private int menuQuantity;
+    private int menuImage;
+    private float menuAmount;
+    private int dropCount;
+    private boolean isChecked;
 
-    String menu_tittle;
-    String menu_id;
-    int menu_quantity;
-    int menu_Image;
-    boolean  box;
-    float menu_amount;
-    int drop_count;
-    String spinnerValue;
-
-   ArrayAdapter menu_adapter;
-
-    public ArrayAdapter getMenu_adapter() {
-        return menu_adapter;
+    public String getMenuId() {
+        return menuId;
     }
 
-    public void setMenu_adapter(ArrayAdapter menu_adapter) {
-        this.menu_adapter = menu_adapter;
+    public void setMenuId(String menuId) {
+        this.menuId = menuId;
     }
 
-    public String getMenu_id() {
-        return menu_id;
+    public String getMenuTitle() {
+        return menuTitle;
     }
 
-    public void setMenu_id(String menu_id) {
-        this.menu_id = menu_id;
+    public void setMenuTitle(String menuTitle) {
+        this.menuTitle = menuTitle;
     }
 
-    public String getMenu_tittle() {
-        return menu_tittle;
+    public int getDropCount(){
+        return dropCount;
     }
 
-    public void setMenu_tittle(String menu_tittle) {
-        this.menu_tittle = menu_tittle;
+    public void setDropCount(int dropCount){
+        this.dropCount = dropCount;
     }
 
-    public void setDrop_count(int menu_drop){
-        this.drop_count = menu_drop;
+    public int getMenuImage() {
+        return menuImage;
     }
 
-    public int getDrop_count(){
-        return drop_count;
+    public void setMenuImage(int menuImage) {
+        this.menuImage = menuImage;
     }
 
-    public int getMenu_Image() {
-        return menu_Image;
+    public int getMenuQuantity() {
+        return menuQuantity;
     }
 
-    public void setMenu_Image(int menu_Image) {
-        this.menu_Image = menu_Image;
+    public void setMenuQuantity(int menuQuantity) {
+        this.menuQuantity = menuQuantity;
     }
 
-    public int getMenu_quantity() {
-        return menu_quantity;
+    public float getMenuAmount() {
+        return menuAmount;
     }
 
-    public void setMenu_quantity(int menu_quantity) {
-        this.menu_quantity = menu_quantity;
+    public void setMenuAmount(float menuAmount) {
+        this.menuAmount = menuAmount;
     }
 
-    public float getMenu_amount() {
-        return menu_amount;
+    public boolean getIsChecked(){
+        return isChecked;
     }
 
-    public void setMenu_amount(float menu_amount) {
-        this.menu_amount = menu_amount;
-
+    public void setIsChecked(boolean isChecked){
+        this.isChecked = isChecked;
     }
 
-    public String getSpinnerValue() {
-        return spinnerValue;
-    }
-
-    public void setSpinnerValue(String spinnerValue) {
-        this.spinnerValue = spinnerValue;
-    }
 }

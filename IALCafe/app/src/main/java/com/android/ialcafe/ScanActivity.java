@@ -98,7 +98,7 @@ public class ScanActivity extends AppCompatActivity {
             String empCategoryId = "";
             String vegNonVeg = "";
             String guestPermit = "";
-            String categoryId = "";
+            int categoryId = 1;
 
             boolean validCode = false;
 
@@ -114,7 +114,7 @@ public class ScanActivity extends AppCompatActivity {
                     empCategoryId = resultSet.getString(9);
                     vegNonVeg = resultSet.getString(6);
                     guestPermit = resultSet.getString(11);
-                    categoryId = resultSet.getString(9);
+                    categoryId = resultSet.getInt(9);
                 }
 
                 resultSet.close();
@@ -139,7 +139,7 @@ public class ScanActivity extends AppCompatActivity {
                 i.putExtra("empCategoryId", empCategoryId);
                 i.putExtra("vegNonVeg", vegNonVeg);
                 i.putExtra("guestPermit", guestPermit);
-                i.putExtra("categoryId", categoryId);
+                i.putExtra("categoryId", String.valueOf(categoryId));
                 startActivity(i);
                 rfid.setText("");
             }
@@ -149,27 +149,34 @@ public class ScanActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.menu_listview, menu);
+        getMenuInflater().inflate(R.menu.menu_overflow, menu);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent i = new Intent(ScanActivity.this, LoginActivity.class);
+                startActivity(i);
+                return true;
+
             case R.id.menu_update:
                 UpdateLocal updateLocal = new UpdateLocal(context);
                 updateLocal.checkServerAvailability(2);
                 return true;
 
             case R.id.menu_orders:
-                Intent i  = new Intent(ScanActivity.this, OrdersActivity.class);
-                i.putExtra("date", dateStr);
-                i.putExtra("deviceName", deviceName);
-                startActivity(i);
+                Intent intent2  = new Intent(ScanActivity.this, OrdersActivity.class);
+                intent2.putExtra("date", dateStr);
+                intent2.putExtra("deviceName", deviceName);
+                startActivity(intent2);
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
+
         }
     }
 
@@ -213,9 +220,7 @@ public class ScanActivity extends AppCompatActivity {
             }
         }
 
-        public void onPostUpdate() {
-
-        }
+        public void onPostUpdate() {}
     }
 
     @Override

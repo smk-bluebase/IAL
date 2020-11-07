@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,7 +22,6 @@ public class LoginActivity extends AppCompatActivity {
     EditText inputDeviceName;
     EditText inputDevicePassword;
     String deviceName = "android1";
-    String devicePassword = "";
 
     Context context;
 
@@ -46,11 +47,12 @@ public class LoginActivity extends AppCompatActivity {
         inputDeviceName.setKeyListener(null);
 
         inputDevicePassword = findViewById(R.id.password);
+        inputDevicePassword.setText(deviceName);
 
         ((Button)findViewById(R.id.login)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                devicePassword = inputDevicePassword.getText().toString();
+                String devicePassword = inputDevicePassword.getText().toString();
                 if (devicePassword.equals(deviceName)) {
                     Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                     inputDevicePassword.setText("");
@@ -65,10 +67,10 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         CheckServer checkServer = new CheckServer(context);
-        checkServer.checkServerAvailability(2);
+        checkServer.checkServerAvailability(1);
     }
 
-    private class CheckServer extends UpdateServerDatabase{
+    private class CheckServer extends PostRequest{
         public CheckServer(Context context){
             super(context);
         }
@@ -94,7 +96,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
-        public void onPostUpdate(){}
+        @Override
+        public void onFinish(JSONArray jsonArray) {}
+
     }
 
     @Override

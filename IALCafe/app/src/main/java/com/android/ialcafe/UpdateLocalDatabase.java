@@ -59,7 +59,7 @@ public abstract class UpdateLocalDatabase {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setTitle("IAL Cafe");
-        alertDialogBuilder.setMessage("Updating Local Database......");
+        alertDialogBuilder.setMessage("Updating Local Database...");
 
         LayoutInflater inflater =  (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View dialogView = inflater.inflate(R.layout.progress_dialogs, null);
