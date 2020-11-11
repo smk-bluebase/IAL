@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
 
         inputDevicePassword = findViewById(R.id.password);
 
-        ((Button)findViewById(R.id.login)).setOnClickListener(new View.OnClickListener() {
+        ((Button) findViewById(R.id.login)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String devicePassword = inputDevicePassword.getText().toString();

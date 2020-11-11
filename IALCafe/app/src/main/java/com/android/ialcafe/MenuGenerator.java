@@ -1,6 +1,7 @@
 package com.android.ialcafe;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -103,81 +104,99 @@ public class MenuGenerator {
             e.printStackTrace();
         }
 
-        if (categoryId == 3){
-            MenuListAdapter menuListAdapter = new MenuListAdapter(context, itemList);
-            menuListAdapter.setCategoryId(categoryId);
-            ((DisplayMenuActivity) context).setListViewAdapter(menuListAdapter);
-        }else {
+        if(itemList.size() > 0) {
+            if (categoryId == 3) {
+                MenuListAdapter menuListAdapter = new MenuListAdapter(context, itemList);
+                menuListAdapter.setCategoryId(categoryId);
+                ((DisplayMenuActivity) context).setListViewAdapter(menuListAdapter);
+            } else {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder.setCancelable(false);
+                alertDialogBuilder.setTitle("IAL Cafe");
+                alertDialogBuilder.setMessage("Checking Item Availability...");
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View dialogView = inflater.inflate(R.layout.progress_dialogs, null);
+                alertDialogBuilder.setView(dialogView);
+
+                final AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
+                final ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
+                Drawable progressDrawable = progressBar.getProgressDrawable().mutate();
+                progressDrawable.setColorFilter(Color.BLUE, android.graphics.PorterDuff.Mode.SRC_IN);
+                progressBar.setProgressDrawable(progressDrawable);
+
+                new Thread(new Runnable() {
+                    int i = 0;
+                    List<CanteenMenu> remove_list = new ArrayList<>();
+                    int increament_status = 100 / itemList.size();
+
+                    @Override
+                    public void run() {
+                        while (i < itemList.size()) {
+                            CanteenMenu canteenMenu = itemList.get(i);
+                            if (quantityGot) {
+                                quantityGot = false;
+
+                                jsonObject = new JsonObject();
+                                jsonObject.addProperty("empCode", empCode);
+                                jsonObject.addProperty("itemId", canteenMenu.getMenuId());
+
+                                PostGetItemQuantity postGetItemQuantity = new PostGetItemQuantity(context);
+                                postGetItemQuantity.checkServerAvailability(1);
+
+                                quantityEntry = false;
+                            }
+                            if (quantityEntry) {
+                                quantityGot = true;
+
+                                int dropCount = canteenMenu.getDropCount();
+                                if (quantity < dropCount) {
+                                    System.out.println("Drop Count : " + (dropCount - quantity));
+                                    canteenMenu.setMenuQuantity(dropCount - quantity);
+                                    canteenMenu.setDropCount(dropCount - quantity);
+                                } else {
+                                    remove_list.add(canteenMenu);
+                                }
+
+                                progressStatus += increament_status;
+                                progressBar.setProgress(progressStatus);
+                                i++;
+                            }
+                        }
+
+                        for (int j = 0; j < remove_list.size(); j++) {
+                            CanteenMenu canteenMenu = remove_list.get(j);
+                            itemList.remove(canteenMenu);
+                        }
+
+                        alertDialog.dismiss();
+                        handler.post(new Runnable() {
+                            public void run() {
+                                MenuListAdapter menuListAdapter = new MenuListAdapter(context, itemList);
+                                menuListAdapter.setCategoryId(categoryId);
+                                ((DisplayMenuActivity) context).setListViewAdapter(menuListAdapter);
+                            }
+                        });
+                    }
+                }).start();
+            }
+        }else{
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
             alertDialogBuilder.setCancelable(false);
             alertDialogBuilder.setTitle("IAL Cafe");
-            alertDialogBuilder.setMessage("Checking Item Availability...");
-
-            LayoutInflater inflater =  (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View dialogView = inflater.inflate(R.layout.progress_dialogs, null);
-            alertDialogBuilder.setView(dialogView);
+            alertDialogBuilder.setMessage("No items available at this time!");
+            alertDialogBuilder.setPositiveButton(android.R.string.ok,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            ((DisplayMenuActivity) context).onBackPressed();
+                        }
+                    });
 
             final AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
-
-            final ProgressBar progressBar = dialogView.findViewById(R.id.progressBar);
-            Drawable progressDrawable = progressBar.getProgressDrawable().mutate();
-            progressDrawable.setColorFilter(Color.BLUE, android.graphics.PorterDuff.Mode.SRC_IN);
-            progressBar.setProgressDrawable(progressDrawable);
-
-            new Thread(new Runnable() {
-                int i = 0;
-                List<CanteenMenu> remove_list = new ArrayList<>();
-                int increament_status = 100/itemList.size();
-                @Override
-                public void run() {
-                    while(i < itemList.size()) {
-                        CanteenMenu canteenMenu = itemList.get(i);
-                        if (quantityGot) {
-                            quantityGot = false;
-
-                            jsonObject = new JsonObject();
-                            jsonObject.addProperty("empCode", empCode);
-                            jsonObject.addProperty("itemId", canteenMenu.getMenuId());
-
-                            PostGetItemQuantity postGetItemQuantity = new PostGetItemQuantity(context);
-                            postGetItemQuantity.checkServerAvailability(1);
-
-                            quantityEntry = false;
-                        }
-                        if(quantityEntry){
-                            quantityGot = true;
-
-                            int dropCount = canteenMenu.getDropCount();
-                            if(quantity < dropCount){
-                                System.out.println("Drop Count : " + (dropCount - quantity));
-                                canteenMenu.setMenuQuantity(dropCount - quantity);
-                                canteenMenu.setDropCount(dropCount - quantity);
-                            }else{
-                                remove_list.add(canteenMenu);
-                            }
-
-                            progressStatus += increament_status;
-                            progressBar.setProgress(progressStatus);
-                            i++;
-                        }
-                    }
-
-                    for(int j = 0; j < remove_list.size(); j++){
-                        CanteenMenu canteenMenu = remove_list.get(j);
-                        itemList.remove(canteenMenu);
-                    }
-
-                    alertDialog.dismiss();
-                    handler.post(new Runnable() {
-                        public void run() {
-                            MenuListAdapter menuListAdapter = new MenuListAdapter(context, itemList);
-                            menuListAdapter.setCategoryId(categoryId);
-                            ((DisplayMenuActivity) context).setListViewAdapter(menuListAdapter);
-                        }
-                    });
-                }
-            }).start();
         }
     }
 

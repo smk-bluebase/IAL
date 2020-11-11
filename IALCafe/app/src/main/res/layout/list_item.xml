@@ -9,14 +9,14 @@
     <ImageView
         android:id="@+id/thumbNail"
         android:layout_width="50dp"
-        android:layout_height="50dp"/>
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"/>
 
     <TextView
         android:id="@+id/itemTitle"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
         android:textSize="18sp"
         android:textStyle="bold" />
 
