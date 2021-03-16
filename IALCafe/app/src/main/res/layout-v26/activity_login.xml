@@ -16,19 +16,20 @@
         android:layout_marginEnd="100dp"
         android:layout_marginRight="100dp" />
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/loginRelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="90dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:background="@drawable/background_container"
         android:orientation="vertical"
         android:paddingLeft="30dp"
-        android:paddingRight="30dp">
+        android:paddingRight="30dp" >
 
         <RelativeLayout
+            android:id="@+id/loginTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp">
@@ -40,7 +41,7 @@
                 android:background="@drawable/logo1" />
 
             <TextView
-                android:id="@+id/loginTitle"
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -81,14 +82,17 @@
             android:layout_marginBottom="20dp"
             android:text="Login" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <View
         android:layout_width="112dp"
         android:layout_height="51dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/logo_website"
+        android:scaleX="2"
+        android:scaleY="2"
+        android:layout_margin="8dp"
+        android:background="@drawable/bluebase_logo"
         android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

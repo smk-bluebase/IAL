@@ -3,6 +3,7 @@ package com.android.ialcafe;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,7 +63,7 @@ public class DisplayMenuActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
-        height = (int) (height / 1.7);
+        height = (int) (height / 1.5);
 
         ImageView background = findViewById(R.id.background);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -102,12 +104,7 @@ public class DisplayMenuActivity extends AppCompatActivity {
 
         Button submit = findViewById(R.id.submit);
 
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupShow();
-            }
-        });
+        submit.setOnClickListener(v -> popupShow());
 
     }
 
@@ -135,26 +132,20 @@ public class DisplayMenuActivity extends AppCompatActivity {
             text_pop.setText(result);
 
             // setup a dialog window
-            androidx.appcompat.app.AlertDialog.Builder builder = alertDialogBuilder.setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            InsertInvoiceHeader insertInvoiceHeader = new InsertInvoiceHeader(context);
-                            insertInvoiceHeader.setEmpCode(empCode);
-                            insertInvoiceHeader.setRFIDNo(rfidNo);
-                            insertInvoiceHeader.setDeviceName(deviceName);
-                            insertInvoiceHeader.setDeviceModel(deviceModel);
-                            insertInvoiceHeader.setCategoryId(categoryId);
-                            insertInvoiceHeader.setTodayDate(todayDate);
-                            insertInvoiceHeader.setSelectedItemList(selectedItemList);
-                            insertInvoiceHeader.checkServerAvailability(1);
-                        }
-                    })
-                    .setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
+            alertDialogBuilder.setCancelable(false)
+                .setPositiveButton("OK", (dialog, id) -> {
+                    InsertInvoiceHeader insertInvoiceHeader = new InsertInvoiceHeader(context);
+                    insertInvoiceHeader.setEmpCode(empCode);
+                    insertInvoiceHeader.setRFIDNo(rfidNo);
+                    insertInvoiceHeader.setDeviceName(deviceName);
+                    insertInvoiceHeader.setDeviceModel(deviceModel);
+                    insertInvoiceHeader.setCategoryId(categoryId);
+                    insertInvoiceHeader.setTodayDate(todayDate);
+                    insertInvoiceHeader.setSelectedItemList(selectedItemList);
+                    insertInvoiceHeader.checkServerAvailability(1);
+                })
+                .setNegativeButton("Cancel",
+                        (dialog, id) -> dialog.cancel());
 
             // create an alert dialog
             AlertDialog alert = alertDialogBuilder.create();

@@ -3,12 +3,16 @@ package com.android.ialcafe;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -25,6 +29,8 @@ public class LoginActivity extends AppCompatActivity {
 
     Context context;
 
+    RelativeLayout loginRelativeLayout;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
-        height = (int) (height / 1.7);
+        height = (int) (height / 1.5);
 
         ImageView background = findViewById(R.id.background);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -42,26 +48,30 @@ public class LoginActivity extends AppCompatActivity {
 
         context = this;
 
+        loginRelativeLayout = findViewById(R.id.loginRelativeLayout);
+
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) findViewById(R.id.loginRelativeLayout).getLayoutParams();
+        height = displayMetrics.heightPixels;
+        height = (int) (height / 4.5);
+        params.setMargins(getPXFromDP(30), height, getPXFromDP(30), 0);
+
         inputDeviceName = findViewById(R.id.username);
         inputDeviceName.setText(deviceName);
         inputDeviceName.setKeyListener(null);
 
         inputDevicePassword = findViewById(R.id.password);
 
-        ((Button) findViewById(R.id.login)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String devicePassword = inputDevicePassword.getText().toString();
-                if (devicePassword.equals(deviceName)) {
-                    Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                    inputDevicePassword.setText("");
+        ((Button) findViewById(R.id.login)).setOnClickListener((View.OnClickListener) v -> {
+            String devicePassword = inputDevicePassword.getText().toString();
+            if (devicePassword.equals(deviceName)) {
+                Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                inputDevicePassword.setText("");
 
-                    Intent i = new Intent(LoginActivity.this, ScanActivity.class);
-                    i.putExtra("deviceName", deviceName);
-                    startActivity(i);
-                } else {
-                    Toast.makeText(LoginActivity.this, "Does not Match", Toast.LENGTH_SHORT).show();
-                }
+                Intent i = new Intent(LoginActivity.this, ScanActivity.class);
+                i.putExtra("deviceName", deviceName);
+                startActivity(i);
+            } else {
+                Toast.makeText(LoginActivity.this, "Does not Match", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -81,11 +91,9 @@ public class LoginActivity extends AppCompatActivity {
                 alertDialogBuilder.setTitle("IAL Cafe");
                 alertDialogBuilder.setMessage("Connection to Server not Available!");
                 alertDialogBuilder.setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                finishAffinity();
-                            }
+                        (dialog, id) -> {
+                            dialog.cancel();
+                            finishAffinity();
                         });
 
                 final AlertDialog alertDialog = alertDialogBuilder.create();
@@ -98,6 +106,17 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onFinish(JSONArray jsonArray) {}
 
+    }
+
+    public int getPXFromDP(int dp){
+        Resources r = context.getResources();
+        int px = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp,
+                r.getDisplayMetrics()
+        );
+
+        return px;
     }
 
     @Override

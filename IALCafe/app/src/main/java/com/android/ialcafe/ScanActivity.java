@@ -1,18 +1,24 @@
 package com.android.ialcafe;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +27,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.budiyev.android.codescanner.CodeScanner;
+import com.budiyev.android.codescanner.CodeScannerView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,6 +47,8 @@ public class ScanActivity extends AppCompatActivity {
     String currentTime = sdf.format(c.getTime());
     Date date = new Date();
 
+    private CodeScanner mCodeScanner;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
@@ -45,7 +56,7 @@ public class ScanActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
-        height = (int) (height / 1.7);
+        height = (int) (height / 1.5);
 
         ImageView background = findViewById(R.id.background);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -79,12 +90,18 @@ public class ScanActivity extends AppCompatActivity {
         });
 
         Button submit = findViewById(R.id.submit);
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                categorySelection(false);
-            }
-        });
+        submit.setOnClickListener(v -> categorySelection(false));
+
+        CodeScannerView scannerView = findViewById(R.id.scanner_view);
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions((ScanActivity) context, new String[] {Manifest.permission.CAMERA}, 100);
+        }else {
+            mCodeScanner = new CodeScanner(context, scannerView);
+            mCodeScanner.setDecodeCallback(result -> runOnUiThread(() -> rfid.setText(result.getText())));
+            scannerView.setOnClickListener(view -> mCodeScanner.startPreview());
+        }
 
     }
 
@@ -193,11 +210,7 @@ public class ScanActivity extends AppCompatActivity {
                 alertDialogBuilder.setTitle("IAL Cafe");
                 alertDialogBuilder.setMessage("Connection to Server not Available!");
                 alertDialogBuilder.setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
+                        (dialog, id) -> dialog.cancel());
 
                 final AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
@@ -207,12 +220,10 @@ public class ScanActivity extends AppCompatActivity {
                 alertDialogBuilder.setTitle("IAL Cafe");
                 alertDialogBuilder.setMessage("Do you want to update database?");
                 alertDialogBuilder.setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                UpdateLocal updateLocal = new UpdateLocal(context);
-                                updateLocal.updateAll();
-                                dialog.cancel();
-                            }
+                        (dialog, id) -> {
+                            UpdateLocal updateLocal = new UpdateLocal(context);
+                            updateLocal.updateAll();
+                            dialog.cancel();
                         });
 
                 final AlertDialog alertDialog = alertDialogBuilder.create();
@@ -221,6 +232,18 @@ public class ScanActivity extends AppCompatActivity {
         }
 
         public void onPostUpdate() {}
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mCodeScanner != null) mCodeScanner.startPreview();
+    }
+
+    @Override
+    protected void onPause() {
+        if(mCodeScanner != null) mCodeScanner.releaseResources();
+        super.onPause();
     }
 
     @Override
