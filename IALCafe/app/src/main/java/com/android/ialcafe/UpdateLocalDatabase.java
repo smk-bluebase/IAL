@@ -1,5 +1,6 @@
 package com.android.ialcafe;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -24,8 +25,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
-
-import androidx.appcompat.app.AlertDialog;
 
 public abstract class UpdateLocalDatabase {
 

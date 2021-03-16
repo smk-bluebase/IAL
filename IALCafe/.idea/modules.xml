@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IALCafe.iml" filepath="$PROJECT_DIR$/.idea/modules/IALCafe.iml" group="IALCafe" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="IALCafe/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IALCafe.iml" filepath="$PROJECT_DIR$/.idea/modules/IALCafe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/IALCafe.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/IALCafe.app.iml" />
     </modules>
   </component>
 </project>

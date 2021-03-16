@@ -153,11 +153,9 @@ class InsertInvoiceHeader {
                 alertDialogBuilder.setTitle("IAL Cafe");
                 alertDialogBuilder.setMessage("Connection to Server not Available!");
                 alertDialogBuilder.setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                ((DisplayMenuActivity) context).finishAffinity();
-                            }
+                        (dialog, id) -> {
+                            dialog.cancel();
+                            ((DisplayMenuActivity) context).finishAffinity();
                         });
 
                 final AlertDialog alertDialog = alertDialogBuilder.create();
@@ -170,7 +168,7 @@ class InsertInvoiceHeader {
         @Override
         public void onPostUpdate(){
             progressDialog.dismiss();
-            Intent i = new Intent((DisplayMenuActivity) context, ScanActivity.class);
+            Intent i = new Intent(context, ScanActivity.class);
             i.putExtra("deviceName", deviceName);
             context.startActivity(i);
         }

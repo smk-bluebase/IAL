@@ -63,12 +63,9 @@ public class MenuListAdapter extends BaseAdapter {
         thumbNail.setImageResource(item.getMenuImage());
         itemTitle.setText(item.getMenuTitle());
 
-        itemCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                item.setIsChecked(isChecked);
-            }
-        });
+        itemCheck.setOnCheckedChangeListener((buttonView, isChecked) ->
+                item.setIsChecked(isChecked)
+        );
 
         // Employee User
         if(categoryId != 3) {
@@ -86,7 +83,7 @@ public class MenuListAdapter extends BaseAdapter {
 
             List valueList = new ArrayList();
             valueList.clear();
-            for(int i = 1; i <= item.getDropCount(); i++) {
+            for (int i = 1; i <= item.getDropCount(); i++) {
                 valueList.add(i);
             }
             dataAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_item, valueList);
